@@ -286,9 +286,9 @@
         <button class="btn btn-dark" type="submit" id="trialBtn">Register and download</button>
         <p class="req" id="formMsg" style="margin-top:10px"></p>
         <div class="done" id="dl" hidden>
-          <strong>You're registered.</strong> Download Pulpit Live for your computer:
-          <div><a class="btn btn-gold" id="dlBtn" href="#" target="_blank" rel="noopener">Download Pulpit Live</a></div>
-          <div class="dl-links">Other versions: <a id="lnkWin" href="#" target="_blank" rel="noopener">Windows</a> · <a id="lnkArm" href="#" target="_blank" rel="noopener">Mac Apple Silicon</a> · <a id="lnkIntel" href="#" target="_blank" rel="noopener">Mac Intel</a></div>
+          <strong>You're registered.</strong> Open the download folder for your computer and download the installer inside:
+          <div><a class="btn btn-gold" id="dlBtn" href="#" target="_blank" rel="noopener">Open the download folder</a></div>
+          <div class="dl-links">Other versions: <a id="lnkWin" href="#" target="_blank" rel="noopener">Windows</a> · <a id="lnkArm" href="#" target="_blank" rel="noopener">Mac</a> <span id="lnkIntel" hidden></span></div>
           <p class="req" style="margin:10px 0 0">After installing, open the app, finish its short registration, and the 14 days start. Mac: right-click → Open the first time. Windows: “More info → Run anyway”.</p>
           <div class="fallback" id="fallback" hidden>We could not send your registration automatically. Please copy this and email it to <span class="copyline"><strong>info@pulpitlive.app</strong> <button type="button" class="copybtn" data-copy="info@pulpitlive.app">copy</button></span>:<textarea id="fallbackText" readonly></textarea><button type="button" class="copybtn" id="copyReg" style="margin-top:6px">Copy registration</button></div>
         </div>
@@ -357,7 +357,7 @@
       <div class="rv">
         <h3 style="font-size:22px;margin-bottom:8px">Lifetime license · US$99</h3>
         <p class="req" style="margin:0 0 16px">One-time payment · one church · up to 2 computers · never expires</p>
-        <a class="btn btn-paypal" id="paypalBtn" href="#" target="_blank" rel="noopener">Pay US$99 with PayPal</a>
+        <a class="btn btn-paypal" id="paypalBtn" href="#" target="_blank" rel="noopener">Pay US$1 with PayPal (test price)</a>
         <p class="req" id="paypalNote" style="margin-top:12px">Opens PayPal's secure checkout in a new tab. Your card details never touch this site.</p>
         <p class="req">After paying, check the inbox (and spam) of the email you gave for a message from info@pulpitlive.app. Nothing after 24 hours? Email us the church name and the PayPal receipt.</p>
       </div>
@@ -402,15 +402,15 @@
   // ---------- SETTINGS ----------
   // 1. Installer links (a GitHub Release or any file host; only shown after the trial form is sent):
   const DOWNLOADS = {
-    win:        'https://github.com/brentnara98/pulpitlive-site/releases/download/v1.2.3/PulpitLive-Setup-1.2.3.exe',
-    'mac-arm':  'https://github.com/brentnara98/pulpitlive-site/releases/download/v1.2.3/PulpitLive-1.2.3-arm64.dmg',
-    'mac-intel':'https://github.com/brentnara98/pulpitlive-site/releases/download/v1.2.3/PulpitLive-1.2.3-x64.dmg',
+    win:        'https://drive.google.com/drive/folders/1zhmQKpcOEM5lN7VKjrwjEkBQWy5eKNvd?usp=sharing',
+    'mac-arm':  'https://drive.google.com/drive/folders/1GKe8CMSyT6cKGhOMVzvGs-DOIxsoe08W?usp=sharing',
+    'mac-intel':'https://drive.google.com/drive/folders/1GKe8CMSyT6cKGhOMVzvGs-DOIxsoe08W?usp=sharing',
   };
-  // 2. Form service that emails trial registrations to info@pulpitlive.app (formspree.io: create a form, paste its endpoint).
-  //    Leave empty and the page shows the visitor a copy-and-email box instead.
-  const FORM_ENDPOINT = '';
+  // 2. Form service that emails trial registrations to info@pulpitlive.app (formsubmit.co, no account needed;
+  //    the first submission sends a one-time "Activate" email to info@pulpitlive.app).
+  const FORM_ENDPOINT = 'https://formsubmit.co/ajax/info@pulpitlive.app';
   // 3. The PayPal payment link for "Pulpit Live - Lifetime License" (US$99):
-  const PAYPAL_LINK = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=naraivanbrent%40gmail.com&item_name=Pulpit+Live+-+Lifetime+License+(one+church,+2+computers)&item_number=PULPITLIVE-LIFETIME&amount=99.00&currency_code=USD&no_shipping=1&no_note=0&cn=Church+name+(as+it+should+appear+on+the+license)+and+the+email+for+the+key&return=https%3A%2F%2Fpulpitlive.app%2F%23paid&cbt=Return+to+Pulpit+Live';
+  const PAYPAL_LINK = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=naraivanbrent%40gmail.com&item_name=Pulpit+Live+-+Lifetime+License+(one+church,+2+computers)&item_number=PULPITLIVE-LIFETIME&amount=1.00&currency_code=USD&no_shipping=1&no_note=0&cn=Church+name+(as+it+should+appear+on+the+license)+and+the+email+for+the+key&return=https%3A%2F%2Fpulpitlive.app%2F%23paid&cbt=Return+to+Pulpit+Live';
 
   document.getElementById('paypalBtn').href = PAYPAL_LINK;
   document.getElementById('lnkWin').href = DOWNLOADS.win;
@@ -469,9 +469,11 @@
     if (!form.checkValidity()) { msg.textContent = 'Please fill in every field.'; form.reportValidity(); return; }
     btn.disabled = true; msg.textContent = 'Registering…';
     const data = new FormData(form);
-    data.append('_subject', 'Pulpit Live trial registration');
+    data.append('_subject', 'Pulpit Live trial registration — ' + form.church.value);
     data.append('platform', osSel.options[osSel.selectedIndex].text);
     data.append('_replyto', data.get('email'));
+    data.append('_template', 'table');
+    data.append('_captcha', 'false');
     let ok = false;
     if (FORM_ENDPOINT) {
       try { const r = await fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } }); ok = r.ok; } catch (err) { ok = false; }
