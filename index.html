@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pulpit Live</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Pulpit Live listens to the preacher and puts the Bible verse on the projector the moment it is named. Hands-free, offline, King James Version. Free 14-day trial for Windows and Mac.">
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+  /* Layout: dark navy bands for hero/pricing, warm paper for reading sections; one gold accent. Single deliberate theme. */
+  :root{
+    --navy:#0b1a33; --navy-2:#081024; --ink:#101828; --muted:#5b6474; --line:#e3e5eb;
+    --gold:#d4a92a; --gold-ink:#1b1500; --paper:#f6f5f1; --white:#fff; --ok:#1f8f4e;
+    --radius:16px; --max:1120px;
+    --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; --serif:'Source Serif 4',Georgia,serif;
+    color-scheme:light;
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;font-size:16px}
+  a{color:inherit} img{max-width:100%;display:block}
+  .wrap{max-width:var(--max);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+  h2{font-size:clamp(28px,4vw,40px);font-weight:800}
+  .lead{font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:720px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:12px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font:inherit;font-size:16px;transition:transform .12s ease,box-shadow .12s ease}
+  .btn:active{transform:scale(.98)} .btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  .btn-gold{background:var(--gold);color:var(--gold-ink);box-shadow:0 8px 24px rgba(212,169,42,.35)}
+  .btn-gold:hover{box-shadow:0 12px 30px rgba(212,169,42,.45)}
+  .btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4)} .btn-ghost:hover{border-color:#fff}
+  .btn-dark{background:var(--navy);color:#fff}
+  .btn-paypal{background:#ffc439;color:#003087;font-size:17px}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+  .pill-gold{background:rgba(212,169,42,.18);color:var(--gold);border:1px solid rgba(212,169,42,.4)}
+  .req{font-size:13px;color:var(--muted)}
+  .copyline{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .copybtn{font:inherit;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+
+  /* reveal on scroll (only when JS runs; the page is complete without it) */
+  .js .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .js .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}
+  @media (prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none;transition:none} .anim,.anim *{animation:none!important}}
+
+  nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(11,26,51,.94);backdrop-filter:blur(10px);color:#fff}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+  nav .wrap{display:flex;align-items:center;gap:18px;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;text-decoration:none}
+  .brand img{width:34px;height:34px;border-radius:9px}
+  nav ul{display:flex;gap:22px;list-style:none;margin:0 0 0 auto;padding:0}
+  nav ul a{text-decoration:none;color:rgba(255,255,255,.8);font-weight:600;font-size:15px} nav ul a:hover{color:#fff}
+  nav .btn{padding:10px 16px;font-size:14px;margin-left:auto}
+  nav ul + .btn{margin-left:0}
+  @media (max-width:760px){nav ul{display:none}}
+
+  .hero{background:radial-gradient(1200px 600px at 70% -10%,#1d3a6a 0%,var(--navy) 55%,var(--navy-2) 100%);color:#fff;padding-block:64px 88px;overflow:hidden}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
+  @media (max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+  .hero h1{font-size:clamp(38px,5.6vw,64px);font-weight:800;margin:18px 0 16px}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero p.lead{color:rgba(255,255,255,.78)}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 14px}
+  .hero-note{font-size:14px;color:rgba(255,255,255,.6)} .hero-note strong{color:#fff}
+
+  .demo{position:relative;background:#06101f;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.45);min-height:300px;display:flex;flex-direction:column;justify-content:space-between;font-family:var(--serif);max-width:100%}
+  .demo-verse{font-size:clamp(17px,2.1vw,25px);line-height:1.4;min-height:7.2em;transition:opacity .5s ease,transform .5s ease}
+  .demo-verse.hide{opacity:0;transform:translateY(8px)}
+  .demo-ref{color:var(--gold);font-weight:600;font-size:clamp(17px,1.9vw,22px);transition:opacity .4s ease} .demo-ref.hide{opacity:0}
+  .demo-ref small{font-family:var(--font);color:rgba(255,255,255,.5);font-size:12px;letter-spacing:.14em;margin-left:10px}
+  .demo-foot{font-family:var(--font);display:flex;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.45);text-transform:uppercase;margin-top:18px}
+  .heard{position:absolute;left:18px;right:18px;bottom:-26px;background:#fff;color:var(--ink);border-radius:12px;padding:10px 14px;font-family:var(--font);font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;min-width:0}
+  .heard .txt{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .heard .mic{flex:none;width:10px;height:10px;border-radius:50%;background:#e4493d;animation:pulse 1.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(228,73,61,.6)}70%{box-shadow:0 0 0 9px rgba(228,73,61,0)}100%{box-shadow:0 0 0 0 rgba(228,73,61,0)}}
+  .heard mark{background:#fff3c4;border-radius:4px;padding:0 3px}
+  .bars{display:flex;gap:3px;align-items:flex-end;height:16px;margin-left:auto;flex:none}
+  .bars i{width:4px;background:var(--ok);border-radius:2px;animation:bar .9s ease-in-out infinite}
+  .bars i:nth-child(2){animation-delay:.15s}.bars i:nth-child(3){animation-delay:.3s}.bars i:nth-child(4){animation-delay:.45s}.bars i:nth-child(5){animation-delay:.6s}
+  @keyframes bar{0%,100%{height:4px}50%{height:16px}}
+
+  section{padding-block:84px}
+  .kicker{color:var(--gold);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:13px;margin-bottom:12px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px}
+  @media (max-width:860px){.grid3{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;min-width:0}
+  .card .ico{width:48px;height:48px;border-radius:12px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-weight:800;font-size:20px}
+  .card h3{font-size:19px;margin-bottom:8px} .card p{margin:0;color:var(--muted)}
+
+  .say{background:var(--navy);color:#fff}
+  .say .examples{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:36px}
+  .ex{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px;min-width:0}
+  .ex q{display:block;font-family:var(--serif);font-size:20px;quotes:"“" "”"}
+  .ex span{display:block;margin-top:8px;color:var(--gold);font-weight:700;font-size:14px}
+
+  .steps{display:flex;flex-direction:column;gap:40px;margin-top:44px}
+  .step{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
+  .step:nth-child(even) .mock{order:-1}
+  @media (max-width:860px){.step{grid-template-columns:1fr}.step:nth-child(even) .mock{order:0}}
+  .step > div{min-width:0}
+  .num{display:inline-flex;width:38px;height:38px;border-radius:50%;background:var(--gold);color:var(--gold-ink);font-weight:800;align-items:center;justify-content:center;margin-bottom:12px}
+  .step h3{font-size:24px;margin-bottom:10px} .step p{color:var(--muted);margin:0 0 10px}
+  .step ul{color:var(--muted);margin:0;padding-left:18px} .step li{margin:6px 0}
+  .mock{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 12px 40px rgba(16,24,40,.08);max-width:100%}
+  .mock-screen{background:#06101f;border-radius:10px;color:#fff;padding:18px;font-family:var(--serif);min-height:190px;position:relative;overflow:hidden}
+  .chain{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 6px;flex-wrap:wrap}
+  .chain .box{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-align:center;font-size:13px;font-weight:600;flex:1;min-width:110px}
+  .chain .box small{display:block;color:var(--muted);font-weight:500}
+  .chain .box.hot{border-color:var(--gold);background:#fff8e1}
+  .chain .arrow{width:34px;height:2px;background:var(--gold);position:relative;flex:none}
+  .chain .arrow::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid var(--gold)}
+  .chain .dot{position:absolute;top:-3px;left:0;width:8px;height:8px;border-radius:50%;background:var(--gold);animation:travel 1.4s linear infinite}
+  @keyframes travel{from{left:-4px}to{left:30px}}
+  .chain-note{text-align:center;font-size:13px;color:var(--muted);margin:4px 0 0}
+  .start{width:120px;height:120px;border-radius:50%;background:var(--gold);color:var(--gold-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;margin:14px auto;box-shadow:0 10px 30px rgba(212,169,42,.4);animation:breathe 2.4s ease-in-out infinite;text-align:center;font-size:14px}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  .page-tag{position:absolute;right:14px;top:14px;font-family:var(--font);font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.55);text-transform:uppercase}
+  .verses{font-size:15px;line-height:1.5;padding-right:70px}
+  .verses sup{color:var(--gold);font-family:var(--font);font-weight:700;font-size:10px;margin-right:4px}
+  .results{font-family:var(--font);font-size:13px;padding-left:18px;margin:0} .results li{margin:6px 0} .results b{color:var(--gold);margin-right:6px}
+  .video{margin-top:40px;border-radius:16px;aspect-ratio:16/9;max-width:100%;position:relative;overflow:hidden;background:linear-gradient(135deg,#0b1a33,#06101f);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px}
+
+  .trial{background:#fff}
+  .trial-box{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:36px;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:34px}
+  @media (max-width:860px){.trial-box{grid-template-columns:1fr;padding:22px}}
+  .trial-box > *{min-width:0}
+  .form label{display:block;font-weight:600;font-size:14px;margin:12px 0 6px}
+  .form input,.form select{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+  .form input:focus,.form select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,26,51,.12)}
+  .form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px} @media (max-width:520px){.form .row{grid-template-columns:1fr}}
+  .form .btn{width:100%;justify-content:center;margin-top:18px}
+  .done{margin-top:18px;padding:18px;border-radius:12px;background:#eef8f1;border:1px solid #cfe9d8}
+  .done .btn{margin-top:10px;width:auto}
+  .dl-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:14px;color:var(--muted)}
+  .side h3{font-size:22px;margin-bottom:10px} .side ul{padding-left:18px;color:var(--muted);margin:0 0 18px} .side li{margin:6px 0}
+  .fallback{margin-top:12px;padding:12px;border-radius:10px;background:#fff8e1;border:1px solid #f1dc9a;font-size:14px}
+  .fallback textarea{width:100%;margin-top:8px;font:inherit;font-size:13px;padding:8px;border:1px solid var(--line);border-radius:8px;min-height:120px}
+
+  .pricing{background:var(--navy);color:#fff}
+  .pricing .lead{color:rgba(255,255,255,.72)}
+  .plans{display:grid;grid-template-columns:1fr 1.2fr;gap:22px;margin-top:34px}
+  @media (max-width:860px){.plans{grid-template-columns:1fr}}
+  .plan{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:28px;min-width:0}
+  .plan.pro{border-color:var(--gold);background:rgba(212,169,42,.08);position:relative}
+  .plan h3{font-size:22px;margin-bottom:6px}
+  .price{font-size:clamp(36px,5vw,52px);font-weight:800;margin:12px 0 2px;font-variant-numeric:tabular-nums}
+  .price s{font-size:22px;color:rgba(255,255,255,.5);margin-left:10px;font-weight:600}
+  .price-note{color:rgba(255,255,255,.65);font-size:14px}
+  .plan ul{list-style:none;padding:0;margin:18px 0 22px}
+  .plan li{padding:7px 0;border-top:1px solid rgba(255,255,255,.1);display:flex;gap:10px}
+  .plan li::before{content:"✓";color:var(--gold);font-weight:800}
+  .badge{position:absolute;top:-12px;right:22px;background:var(--gold);color:var(--gold-ink);font-weight:800;font-size:12px;letter-spacing:.08em;padding:5px 12px;border-radius:999px;text-transform:uppercase}
+  .pay{color:rgba(255,255,255,.75);font-size:14px;margin-top:14px}
+
+  details{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-top:10px}
+  summary{font-weight:700;cursor:pointer} details p{margin:10px 0 0;color:var(--muted)}
+
+  footer{background:var(--navy-2);color:rgba(255,255,255,.65);padding-block:40px;font-size:14px}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;align-items:center}
+  footer a{color:#fff;text-decoration:none}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js');</script>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="icon-192.png" alt="">Pulpit Live</a>
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#howto">How to use</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#buy">Buy a license</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="btn btn-gold" href="#trial">Free 14-day trial</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="pill pill-gold">Hands-free · voice activated · offline</span>
+      <h1>Say the verse.<br>It appears <em>on the projector.</em></h1>
+      <p class="lead">Pulpit Live listens to the preacher. The moment a reference is named — <strong style="color:#fff">“John three sixteen”</strong> — the verse is on the screen. Nothing to click, nothing to type, no one sitting at the laptop. King James Version, and it works without internet.</p>
+      <div class="hero-cta">
+        <a class="btn btn-gold" href="#trial">Start the free 14-day trial</a>
+        <a class="btn btn-ghost" href="#howto">See how it works</a>
+      </div>
+      <p class="hero-note">Windows 10/11 and Mac · <strong>full access for 14 days</strong>, then one lifetime license per church · US$99</p>
+    </div>
+    <div>
+      <div class="demo anim" id="demo">
+        <div>
+          <div class="demo-verse" id="demoVerse">For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.</div>
+          <div class="demo-ref" id="demoRef">John 3:16<small>KJV</small></div>
+        </div>
+        <div class="demo-foot"><span>Your church name</span><span>King James Version</span></div>
+        <div class="heard"><span class="mic"></span><span class="txt" id="demoHeard">turn with me to <mark>John</mark> <mark>three</mark> <mark>sixteen</mark></span><span class="bars"><i></i><i></i><i></i><i></i><i></i></span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="how">
+  <div class="wrap">
+    <div class="kicker rv">Why pastors use it</div>
+    <h2 class="rv">The preacher preaches. The screen keeps up.</h2>
+    <p class="lead rv d1">Built for churches where no one wants to sit at a laptop during the sermon.</p>
+    <div class="grid3">
+      <div class="card rv"><div class="ico">🎙</div><h3>Hands-free, by voice</h3><p>Press Start once when the service begins. Every reference the preacher says, in any natural way, goes up by itself. No pauses, no operator.</p></div>
+      <div class="card rv d1"><div class="ico">📖</div><h3>Whole chapters, page by page</h3><p>Name only a chapter for a verse-by-verse study and it shows page after page. Say “next page”. Say “find but God commendeth his love” when the reference slips your mind.</p></div>
+      <div class="card rv d2"><div class="ico">🔒</div><h3>Offline and private</h3><p>Everything runs on the laptop. No internet during the service, nothing recorded, nothing sent anywhere. The speech engine is built in; there is no subscription.</p></div>
+      <div class="card rv"><div class="ico">🖥</div><h3>Beautiful on the projector</h3><p>Dark, light or Bible-study style with the verse before and after; five formal fonts; your church logo and background picture.</p></div>
+      <div class="card rv d1"><div class="ico">🎚</div><h3>Copes with real voices</h3><p>Understands whole sentences and a wide range of accents, and lets you add a corrections list for words your preacher says differently.</p></div>
+      <div class="card rv d2"><div class="ico">∞</div><h3>Lifetime license</h3><p>One payment, one church, up to two computers. Never expires, never renews, never phones home.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="say">
+  <div class="wrap">
+    <div class="kicker rv">Say it your way</div>
+    <h2 class="rv">All of these work.</h2>
+    <div class="examples">
+      <div class="ex rv"><q>John three sixteen</q><span>→ John 3:16</span></div>
+      <div class="ex rv d1"><q>Book of John chapter three verse sixteen</q><span>→ John 3:16</span></div>
+      <div class="ex rv d2"><q>First Corinthians thirteen four to seven</q><span>→ 1 Corinthians 13:4-7</span></div>
+      <div class="ex rv d3"><q>First Corinthians chapter fifteen</q><span>→ the whole chapter, page by page</span></div>
+      <div class="ex rv"><q>Find but God commendeth his love</q><span>→ Romans 5:8</span></div>
+      <div class="ex rv d1"><q>Next page · next verse · blank screen</q><span>→ voice commands</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="howto">
+  <div class="wrap">
+    <div class="kicker rv">How to use it</div>
+    <h2 class="rv">Set up once. Then it's one tap every Sunday.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="rv"><span class="num">1</span><h3>Put the microphone near the preacher</h3><p>The app can only be as accurate as what the laptop hears, so the microphone must be close to the preacher's mouth. Pick one:</p>
+          <ul>
+            <li><strong>Best:</strong> a wireless clip-on (lavalier) mic on the preacher, with its receiver plugged into the laptop's USB or mic jack.</li>
+            <li>Or place the laptop itself on the pulpit, within arm's reach of the preacher.</li>
+            <li>Or place the laptop right next to a church speaker, where the preacher's voice is loud and clear.</li>
+          </ul>
+          <p style="margin-top:10px">From the back of the hall, picking up the room, no app works well. The Listening screen shows a level bar and warns when the voice arrives too quietly.</p></div>
+        <div class="mock rv d1"><div class="chain anim"><div class="box hot">Preacher<small>clip-on wireless mic</small></div><div class="arrow"><span class="dot"></span></div><div class="box">Receiver<small>plugged into the laptop</small></div><div class="arrow"><span class="dot"></span></div><div class="box">Laptop<small>Pulpit Live</small></div><div class="arrow"><span class="dot"></span></div><div class="box">Projector<small>HDMI</small></div></div><p class="chain-note">One clip-on mic. Nothing else to buy.</p></div>
+      </div>
+      <div class="step">
+        <div class="rv"><span class="num">2</span><h3>Plug in the projector, press Start</h3><p>The verse screen opens on the projector by itself (set the laptop to Extend, not Mirror). Press the big Start button once when the service begins. The app listens for the whole sermon and stops itself after a long silence.</p></div>
+        <div class="mock rv d1"><div class="start anim">🎙<span>Start listening</span></div><p class="chain-note">Then just preach.</p></div>
+      </div>
+      <div class="step">
+        <div class="rv"><span class="num">3</span><h3>Name a chapter for a verse-by-verse study</h3><p>“First Corinthians chapter fifteen” shows the chapter in readable pages. Say “next page” or press the arrow key to move on; “verse four” jumps within the chapter.</p></div>
+        <div class="mock rv d1"><div class="mock-screen"><span class="page-tag">Page 1 of 13</span><div class="verses"><sup>1</sup>Moreover, brethren, I declare unto you the gospel which I preached unto you, which also ye have received, and wherein ye stand; <sup>2</sup>By which also ye are saved, if ye keep in memory what I preached unto you, unless ye have believed in vain. <sup>3</sup>For I delivered unto you first of all that which I also received, how that Christ died for our sins according to the scriptures;</div></div></div>
+      </div>
+      <div class="step">
+        <div class="rv"><span class="num">4</span><h3>Forgot the reference? Say “find” and the words</h3><p>“Find but God commendeth his love” puts Romans 5:8 on the screen. If several verses share the words, they are listed five at a time; say “number two” to show one.</p></div>
+        <div class="mock rv d1"><div class="mock-screen"><div style="font-family:var(--font);font-size:12px;letter-spacing:.12em;color:rgba(255,255,255,.55);text-transform:uppercase;margin-bottom:10px">“fear not for I am with thee” · 4 verses</div><ol class="results"><li><b>Genesis 26:24</b> …fear not, for I am with thee, and will bless thee…</li><li><b>Isaiah 41:10</b> Fear thou not; for I am with thee: be not dismayed…</li><li><b>Isaiah 43:5</b> Fear not: for I am with thee: I will bring thy seed…</li><li><b>Jeremiah 46:28</b> Fear thou not, O Jacob my servant…</li></ol></div></div>
+      </div>
+    </div>
+    <div class="video rv" id="videoBox">
+      <div style="font-size:44px">▶</div><strong>Demo video coming soon</strong><span style="opacity:.7;font-size:14px">A real Sunday service, from the clip-on mic to the first verse.</span>
+    </div>
+  </div>
+</section>
+
+<section class="trial" id="trial">
+  <div class="wrap">
+    <div class="kicker rv">Free 14-day trial</div>
+    <h2 class="rv">Try everything for 14 days. Nothing to pay.</h2>
+    <p class="lead rv d1">Tell us who you are and the download for your computer appears right here. Full access for 14 days: voice, chapters, find, every projector style. After that, one lifetime license per church.</p>
+    <div class="trial-box">
+      <form class="form rv" id="trialForm" novalidate>
+        <label for="name">Your name</label><input id="name" name="name" required autocomplete="name">
+        <label for="church">Church</label><input id="church" name="church" required autocomplete="organization">
+        <label for="address">Church address (city, country)</label><input id="address" name="address" required>
+        <div class="row">
+          <div><label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email"></div>
+          <div><label for="phone">Contact number</label><input id="phone" name="phone" type="tel" required autocomplete="tel"></div>
+        </div>
+        <label for="os">Computer</label>
+        <select id="os" name="os"><option value="win">Windows 10 / 11</option><option value="mac-arm">Mac with Apple Silicon (M1, M2, M3, M4)</option><option value="mac-intel">Mac with Intel</option></select>
+        <button class="btn btn-dark" type="submit" id="trialBtn">Register and download</button>
+        <p class="req" id="formMsg" style="margin-top:10px"></p>
+        <div class="done" id="dl" hidden>
+          <strong>You're registered.</strong> Download Pulpit Live for your computer:
+          <div><a class="btn btn-gold" id="dlBtn" href="#" target="_blank" rel="noopener">Download Pulpit Live</a></div>
+          <div class="dl-links">Other versions: <a id="lnkWin" href="#" target="_blank" rel="noopener">Windows</a> · <a id="lnkArm" href="#" target="_blank" rel="noopener">Mac Apple Silicon</a> · <a id="lnkIntel" href="#" target="_blank" rel="noopener">Mac Intel</a></div>
+          <p class="req" style="margin:10px 0 0">After installing, open the app, finish its short registration, and the 14 days start. Mac: right-click → Open the first time. Windows: “More info → Run anyway”.</p>
+          <div class="fallback" id="fallback" hidden>We could not send your registration automatically. Please copy this and email it to <span class="copyline"><strong>info@pulpitlive.app</strong> <button type="button" class="copybtn" data-copy="info@pulpitlive.app">copy</button></span>:<textarea id="fallbackText" readonly></textarea><button type="button" class="copybtn" id="copyReg" style="margin-top:6px">Copy registration</button></div>
+        </div>
+      </form>
+      <div class="side rv d1">
+        <h3>What you get in the trial</h3>
+        <ul>
+          <li>Hands-free verses by voice, the whole sermon long</li>
+          <li>Chapters page by page, “find” by words, voice commands</li>
+          <li>Every projector style, font, logo and background</li>
+          <li>Works offline, no account needed to run it</li>
+        </ul>
+        <h3>You need</h3>
+        <ul>
+          <li>Windows 10/11 (64-bit) or macOS 11 or newer; 8 GB memory recommended</li>
+          <li>A projector or TV on HDMI</li>
+          <li>A clip-on wireless mic, or the laptop placed near the preacher</li>
+        </ul>
+        <p class="req">The installer is about 600 MB because the speech engine is built in. The trial is tied to the computer; after 14 days the app locks until a license key is entered.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="kicker rv">Pricing</div>
+    <h2 class="rv">One lifetime license per church.</h2>
+    <p class="lead rv d1">No subscription, nothing to renew, works forever offline. Up to two computers per church. Paid once, through PayPal.</p>
+    <div class="plans">
+      <div class="plan rv">
+        <h3>Trial</h3><div class="price">Free</div><div class="price-note">14 days, full access</div>
+        <ul><li>Everything in the full version for 14 days</li><li>No card, no account</li><li>Locks after 14 days until a license key is entered</li></ul>
+        <a class="btn btn-ghost" href="#trial">Start the trial</a>
+      </div>
+      <div class="plan pro rv d1">
+        <span class="badge">Launch price</span>
+        <h3>Lifetime license</h3>
+        <div class="price">US$99<s>US$149</s></div>
+        <div class="price-note">One-time · worldwide</div>
+        <ul>
+          <li>Hands-free verses by voice, forever</li>
+          <li>Chapters, “find”, commands, all projector styles</li>
+          <li>One church, up to 2 computers</li>
+          <li>All 1.x updates included</li>
+          <li>Never expires, never phones home</li>
+        </ul>
+        <a class="btn btn-gold" href="#buy">Get a lifetime license</a>
+        <p class="pay">Pay with PayPal, or any card through PayPal, in your own currency. The license key arrives by email within a day. Enter it once in Settings → License.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="buy">
+  <div class="wrap">
+    <div class="kicker rv">Get a lifetime license</div>
+    <h2 class="rv">Three steps. The key is yours for good.</h2>
+    <p class="lead rv d1">Order during the trial or after it ends; the app keeps your settings either way. Pay through PayPal and the license key arrives by email within a day.</p>
+    <div class="grid3" style="margin-top:28px">
+      <div class="card rv"><div class="ico">1</div><h3>Pay with PayPal</h3><p>Press the button below. PayPal takes a PayPal balance or any debit/credit card, in your own currency, with or without a PayPal account.</p></div>
+      <div class="card rv d1"><div class="ico">2</div><h3>Tell us the church name</h3><p>At checkout PayPal shows a note box: type the church name, spelled the way it should appear on the license, and the email to send the key to.</p></div>
+      <div class="card rv d2"><div class="ico">3</div><h3>Enter the key once</h3><p>Open Pulpit Live → Settings → License → Manage, paste the key, Activate. Same key on the church's second computer. No internet needed.</p></div>
+    </div>
+    <div class="trial-box">
+      <div class="rv">
+        <h3 style="font-size:22px;margin-bottom:8px">Lifetime license · US$99</h3>
+        <p class="req" style="margin:0 0 16px">One-time payment · one church · up to 2 computers · never expires</p>
+        <a class="btn btn-paypal" id="paypalBtn" href="#" target="_blank" rel="noopener">Pay US$99 with PayPal</a>
+        <p class="req" id="paypalNote" style="margin-top:12px">Opens PayPal's secure checkout in a new tab. Your card details never touch this site.</p>
+        <p class="req">After paying, check the inbox (and spam) of the email you gave for a message from info@pulpitlive.app. Nothing after 24 hours? Email us the church name and the PayPal receipt.</p>
+      </div>
+      <div class="side rv d1">
+        <h3>Questions before you buy?</h3>
+        <p class="req" style="font-size:15px;color:var(--ink)">Write to <span class="copyline"><strong>info@pulpitlive.app</strong> <button type="button" class="copybtn" data-copy="info@pulpitlive.app">copy</button></span></p>
+        <ul>
+          <li>Orders are matched to your PayPal payment and the church name you typed at checkout</li>
+          <li>Keys are issued by a person, usually within hours, always within one day</li>
+          <li>Moving to a new computer? Deactivate on the old one and activate on the new one, same key</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="trial">
+  <div class="wrap">
+    <div class="kicker rv">Questions</div>
+    <h2 class="rv">Things pastors ask</h2>
+    <div style="margin-top:24px">
+      <details class="rv"><summary>Does it need internet during the service?</summary><p>No. The speech engine, the Bible text and the license check all run on the laptop. Nothing is recorded and nothing is sent anywhere.</p></details>
+      <details class="rv"><summary>How accurate is it?</summary><p>Very good when the microphone is near the preacher: a clip-on wireless mic plugged into the laptop, or the laptop on the pulpit. From the back of the hall no app works well. Words your preacher says differently can be added to a corrections list.</p></details>
+      <details class="rv"><summary>Which Bible version?</summary><p>King James Version only, all 31,102 verses.</p></details>
+      <details class="rv"><summary>Do we pay before or after the trial?</summary><p>Either. Most churches try it for a Sunday or two first, then order. You can also order on day one. Paying never restarts anything; the key simply unlocks the app you already set up, with your settings kept.</p></details>
+      <details class="rv"><summary>How do we pay, and how do we get the key?</summary><p>Press Pay with PayPal, pay by PayPal balance or card, and type the church name and your email in the note box at checkout. We match the payment and email the license key, normally within hours, always within a day. Paste it in Settings → License → Manage.</p></details>
+      <details class="rv"><summary>What happens after the 14 days?</summary><p>The app locks and shows the purchase screen. Enter a lifetime license key and everything is back, with your settings kept.</p></details>
+      <details class="rv"><summary>Can we use it for Bible studies and home visits?</summary><p>Yes. The Study style shows the verse before and after so a visitor can read along, and the laptop's own mic is fine with the preacher close by.</p></details>
+      <details class="rv"><summary>Windows says “Windows protected your PC”. Mac says it can't be opened.</summary><p>The installers are not yet signed with paid certificates. Windows: click “More info → Run anyway”. Mac: right-click the app → Open → Open.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Pulpit Live · Lifetime license · KJV</div>
+    <div><span class="copyline">info@pulpitlive.app <button type="button" class="copybtn" data-copy="info@pulpitlive.app">copy</button></span> · <a href="#faq">FAQ</a></div>
+  </div>
+</footer>
+
+<script>
+  // ---------- SETTINGS ----------
+  // 1. Installer links (a GitHub Release or any file host; only shown after the trial form is sent):
+  const DOWNLOADS = {
+    win:        'https://github.com/brentnara98/pulpitlive-releases/releases/latest/download/PulpitLive-Setup-1.2.3.exe',
+    'mac-arm':  'https://github.com/brentnara98/pulpitlive-releases/releases/latest/download/PulpitLive-1.2.3-arm64.dmg',
+    'mac-intel':'https://github.com/brentnara98/pulpitlive-releases/releases/latest/download/PulpitLive-1.2.3-x64.dmg',
+  };
+  // 2. Form service that emails trial registrations to info@pulpitlive.app (formspree.io: create a form, paste its endpoint).
+  //    Leave empty and the page shows the visitor a copy-and-email box instead.
+  const FORM_ENDPOINT = '';
+  // 3. The PayPal payment link for "Pulpit Live - Lifetime License" (US$99):
+  const PAYPAL_LINK = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=naraivanbrent%40gmail.com&item_name=Pulpit+Live+-+Lifetime+License+(one+church,+2+computers)&item_number=PULPITLIVE-LIFETIME&amount=99.00&currency_code=USD&no_shipping=1&no_note=0&cn=Church+name+(as+it+should+appear+on+the+license)+and+the+email+for+the+key&return=https%3A%2F%2Fpulpitlive.app%2F%23paid&cbt=Return+to+Pulpit+Live';
+
+  document.getElementById('paypalBtn').href = PAYPAL_LINK;
+  document.getElementById('lnkWin').href = DOWNLOADS.win;
+  document.getElementById('lnkArm').href = DOWNLOADS['mac-arm'];
+  document.getElementById('lnkIntel').href = DOWNLOADS['mac-intel'];
+
+  // reveal on scroll
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+    document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+  } else { document.documentElement.classList.remove('js'); }
+
+  // hero demo: words are "heard", then the verse appears
+  const demos = [
+    { heard: ['turn', 'with', 'me', 'to', 'John', 'three', 'sixteen'], ref: 'John 3:16', from: 4, text: 'For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.' },
+    { heard: ['the', 'Bible', 'says', 'in', 'Romans', 'eight', 'twenty', 'eight'], ref: 'Romans 8:28', from: 4, text: 'And we know that all things work together for good to them that love God, to them who are the called according to his purpose.' },
+    { heard: ['find', 'but', 'God', 'commendeth', 'his', 'love'], ref: 'Romans 5:8', from: 0, text: 'But God commendeth his love toward us, in that, while we were yet sinners, Christ died for us.' },
+    { heard: ['First', 'Corinthians', 'thirteen', 'four'], ref: '1 Corinthians 13:4', from: 0, text: 'Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up,' },
+  ];
+  const dv = document.getElementById('demoVerse'), dr = document.getElementById('demoRef'), dh = document.getElementById('demoHeard');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let di = 1;
+  function runDemo() {
+    const d = demos[di % demos.length]; di++;
+    dv.classList.add('hide'); dr.classList.add('hide');
+    let k = 0;
+    dh.textContent = 'Listening…';
+    const tick = setInterval(() => {
+      k++;
+      dh.innerHTML = d.heard.slice(0, k).map((w, i) => (i >= d.from ? '<mark>' + w + '</mark>' : w)).join(' ');
+      if (k >= d.heard.length) {
+        clearInterval(tick);
+        setTimeout(() => { dv.textContent = d.text; dr.innerHTML = d.ref + '<small>KJV</small>'; dv.classList.remove('hide'); dr.classList.remove('hide'); }, 450);
+        setTimeout(runDemo, 6200);
+      }
+    }, 320);
+  }
+  if (!reduced) setTimeout(runDemo, 5000);
+
+  // copy buttons
+  function copyText(t, btn) {
+    const done = () => { const old = btn.textContent; btn.textContent = 'copied'; setTimeout(() => { btn.textContent = old; }, 1200); };
+    try { navigator.clipboard.writeText(t).then(done, () => { window.getSelection().selectAllChildren(btn.previousElementSibling || btn.parentElement); }); } catch (e) { window.getSelection().selectAllChildren(btn.parentElement); }
+  }
+  document.querySelectorAll('.copybtn[data-copy]').forEach((b) => b.addEventListener('click', () => copyText(b.dataset.copy, b)));
+
+  // computer: pre-select from the browser
+  const osSel = document.getElementById('os');
+  const ua = navigator.userAgent;
+  if (/Macintosh|Mac OS X/.test(ua)) osSel.value = 'mac-arm'; else if (/Windows/.test(ua)) osSel.value = 'win';
+
+  // trial form → form service (emails info@pulpitlive.app) → download appears
+  const form = document.getElementById('trialForm'), msg = document.getElementById('formMsg'), btn = document.getElementById('trialBtn');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) { msg.textContent = 'Please fill in every field.'; form.reportValidity(); return; }
+    btn.disabled = true; msg.textContent = 'Registering…';
+    const data = new FormData(form);
+    data.append('_subject', 'Pulpit Live trial registration');
+    data.append('platform', osSel.options[osSel.selectedIndex].text);
+    data.append('_replyto', data.get('email'));
+    let ok = false;
+    if (FORM_ENDPOINT) {
+      try { const r = await fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } }); ok = r.ok; } catch (err) { ok = false; }
+    }
+    btn.disabled = false; msg.textContent = '';
+    const url = DOWNLOADS[osSel.value];
+    document.getElementById('dlBtn').href = url;
+    const fb = document.getElementById('fallback');
+    if (!ok) {
+      const t = 'Pulpit Live trial registration\nName: ' + form.name.value + '\nChurch: ' + form.church.value + '\nAddress: ' + form.address.value + '\nEmail: ' + form.email.value + '\nContact: ' + form.phone.value + '\nComputer: ' + osSel.options[osSel.selectedIndex].text;
+      document.getElementById('fallbackText').value = t;
+      fb.hidden = false;
+      document.getElementById('copyReg').onclick = (ev) => copyText(t, ev.target);
+    } else { fb.hidden = true; }
+    document.getElementById('dl').hidden = false;
+    document.getElementById('dl').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>
+</body>
+</html>
