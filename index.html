@@ -137,13 +137,13 @@
           <div><label for="phone">Contact number</label><input id="phone" name="phone" maxlength="40" type="tel" required autocomplete="tel"></div>
         </div>
         <label for="os">Computer</label>
-        <select id="os" name="os"><option value="win">Windows 10 / 11</option><option value="mac-arm">Mac with Apple Silicon (M1, M2, M3, M4)</option><option value="mac-intel">Mac with Intel</option></select>
+        <select id="os" name="os"><option value="win">Windows 10 / 11</option><option value="mac-arm">Mac with Apple Silicon (M1, M2, M3, M4)</option><option value="mac-intel">Mac with Intel (older Macs)</option></select>
         <button class="btn btn-dark" type="submit" id="trialBtn">Register and download</button>
         <p class="req" id="formMsg" style="margin-top:10px"></p>
         <div class="done" id="dl" hidden>
           <strong>You're registered.</strong> Open the download folder for your computer and download the installer inside:
           <div><a class="btn btn-gold" id="dlBtn" href="#" target="_blank" rel="noopener">Open the download folder</a></div>
-          <div class="dl-links">Other versions: <a id="lnkWin" href="#" target="_blank" rel="noopener">Windows</a> · <a id="lnkArm" href="#" target="_blank" rel="noopener">Mac</a> <span id="lnkIntel" hidden></span></div>
+          <div class="dl-links">Other versions: <a id="lnkWin" href="#" target="_blank" rel="noopener">Windows</a> · <a id="lnkArm" href="#" target="_blank" rel="noopener">Mac (M1–M4)</a> · <a id="lnkIntel" href="#" target="_blank" rel="noopener">Mac Intel</a></div>
           <p class="req" style="margin:10px 0 0">After installing, open the app, finish its short registration, and the 14 days start. Mac: right-click → Open the first time. Windows: “More info → Run anyway”.</p>
           <div class="fallback" id="fallback" hidden>We could not send your registration automatically. Please copy this and email it to <span class="copyline"><strong>info@pulpitlive.app</strong> <button type="button" class="copybtn" data-copy="info@pulpitlive.app">copy</button></span>:<textarea id="fallbackText" readonly></textarea><button type="button" class="copybtn" id="copyReg" style="margin-top:6px">Copy registration</button></div>
         </div>

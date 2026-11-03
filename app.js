@@ -5,7 +5,7 @@ if (window.top !== window.self) { try { window.top.location.replace(window.self.
   const DOWNLOADS = {
     win:        'https://drive.google.com/drive/folders/1zhmQKpcOEM5lN7VKjrwjEkBQWy5eKNvd?usp=sharing',
     'mac-arm':  'https://drive.google.com/drive/folders/1GKe8CMSyT6cKGhOMVzvGs-DOIxsoe08W?usp=sharing',
-    'mac-intel':'https://drive.google.com/drive/folders/1GKe8CMSyT6cKGhOMVzvGs-DOIxsoe08W?usp=sharing',
+    'mac-intel':'https://drive.google.com/drive/folders/18GpSUM92HI2A3fmfu-9fxm61f3QjozJM?usp=sharing',
   };
   // 2. Form service that emails trial registrations to info@pulpitlive.app (formsubmit.co, no account needed;
   //    the first submission sends a one-time "Activate" email to info@pulpitlive.app).
@@ -61,10 +61,28 @@ if (window.top !== window.self) { try { window.top.location.replace(window.self.
   }
   document.querySelectorAll('.copybtn[data-copy]').forEach((b) => b.addEventListener('click', () => copyText(b.dataset.copy, b)));
 
-  // computer: pre-select from the browser
+  // computer: pre-select from the browser — Windows, or a Mac with Apple Silicon or Intel
   const osSel = document.getElementById('os');
   const ua = navigator.userAgent;
-  if (/Macintosh|Mac OS X/.test(ua)) osSel.value = 'mac-arm'; else if (/Windows/.test(ua)) osSel.value = 'win';
+  function macChip() {
+    // Chrome and Edge say the processor type directly
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+      return navigator.userAgentData.getHighEntropyValues(['architecture']).then((v) => (v.architecture === 'x86' ? 'mac-intel' : v.architecture === 'arm' ? 'mac-arm' : guessFromGraphics())).catch(guessFromGraphics);
+    }
+    return Promise.resolve(guessFromGraphics());
+  }
+  function guessFromGraphics() {
+    // Safari and Firefox: the graphics chip name gives it away ("Apple M2" vs "Intel Iris")
+    try {
+      const gl = document.createElement('canvas').getContext('webgl');
+      const ext = gl && gl.getExtension('WEBGL_debug_renderer_info');
+      const name = gl ? String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER)) : '';
+      if (/intel|amd|radeon/i.test(name)) return 'mac-intel';
+    } catch (e) { /* fall through */ }
+    return 'mac-arm'; // almost every Mac sold since 2020
+  }
+  if (/Macintosh|Mac OS X/.test(ua)) { osSel.value = 'mac-arm'; macChip().then((v) => { osSel.value = v; }); }
+  else if (/Windows/.test(ua)) osSel.value = 'win';
 
   // trial form → form service (emails info@pulpitlive.app) → download appears
   const form = document.getElementById('trialForm'), msg = document.getElementById('formMsg'), btn = document.getElementById('trialBtn');
