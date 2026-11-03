@@ -11,7 +11,7 @@ if (window.top !== window.self) { try { window.top.location.replace(window.self.
   //    the first submission sends a one-time "Activate" email to info@pulpitlive.app).
   const FORM_ENDPOINT = 'https://formsubmit.co/ajax/info@pulpitlive.app';
   // 3. The PayPal payment link for "Pulpit Live - Lifetime License" (US$99):
-  const PAYPAL_LINK = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=naraivanbrent%40gmail.com&item_name=Pulpit+Live+-+Lifetime+License+(one+church,+2+computers)&item_number=PULPITLIVE-LIFETIME&amount=1.00&currency_code=USD&no_shipping=1&no_note=0&cn=Church+name+(as+it+should+appear+on+the+license)+and+the+email+for+the+key&return=https%3A%2F%2Fpulpitlive.app%2F%23paid&cbt=Return+to+Pulpit+Live';
+  const PAYPAL_LINK = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=naraivanbrent%40gmail.com&item_name=Pulpit+Live+-+Lifetime+License+(one+church,+2+computers)&item_number=PULPITLIVE-LIFETIME&amount=99.00&currency_code=USD&no_shipping=1&no_note=0&cn=Church+name+(as+it+should+appear+on+the+license)+and+the+email+for+the+key&return=https%3A%2F%2Fpulpitlive.app%2F%23paid&cbt=Return+to+Pulpit+Live';
 
   document.getElementById('paypalBtn').href = PAYPAL_LINK;
   document.getElementById('lnkWin').href = DOWNLOADS.win;
