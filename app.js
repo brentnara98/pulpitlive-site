@@ -10,7 +10,7 @@ if (window.top !== window.self) { try { window.top.location.replace(window.self.
   // 2. Where registrations go. REGISTER_ENDPOINT is your own Google Apps Script web app (see
   //    registrations/Code.gs): it writes each registration to your Google Sheet, emails you, and emails
   //    the person their download link. Until it is set, the old formsubmit.co address is used.
-  const REGISTER_ENDPOINT = '';
+  const REGISTER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzs0sLqEcocx44v5jZsIcoq9xkVvyCA71_uDsB1DEmPwJ75LptGpQRv423AkLvflIy3mg/exec';
   const REGISTER_SECRET = '';   // same word as SECRET in Code.gs, or '' for none
   const FORM_ENDPOINT = 'https://formsubmit.co/ajax/info@pulpitlive.app';
   // 3. The PayPal payment link for "Pulpit Live - Lifetime License" (US$99):
