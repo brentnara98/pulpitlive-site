@@ -7,8 +7,11 @@ if (window.top !== window.self) { try { window.top.location.replace(window.self.
     'mac-arm':  'https://drive.google.com/drive/folders/1GKe8CMSyT6cKGhOMVzvGs-DOIxsoe08W?usp=sharing',
     'mac-intel':'https://drive.google.com/drive/folders/18GpSUM92HI2A3fmfu-9fxm61f3QjozJM?usp=sharing',
   };
-  // 2. Form service that emails trial registrations to info@pulpitlive.app (formsubmit.co, no account needed;
-  //    the first submission sends a one-time "Activate" email to info@pulpitlive.app).
+  // 2. Where registrations go. REGISTER_ENDPOINT is your own Google Apps Script web app (see
+  //    registrations/Code.gs): it writes each registration to your Google Sheet, emails you, and emails
+  //    the person their download link. Until it is set, the old formsubmit.co address is used.
+  const REGISTER_ENDPOINT = '';
+  const REGISTER_SECRET = '';   // same word as SECRET in Code.gs, or '' for none
   const FORM_ENDPOINT = 'https://formsubmit.co/ajax/info@pulpitlive.app';
   // 3. The PayPal payment link for "Pulpit Live - Lifetime License" (US$99):
   const PAYPAL_LINK = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=naraivanbrent%40gmail.com&item_name=Pulpit+Live+-+Lifetime+License+(one+church,+2+computers)&item_number=PULPITLIVE-LIFETIME&amount=99.00&currency_code=USD&no_shipping=1&no_note=0&cn=Church+name+(as+it+should+appear+on+the+license)+and+the+email+for+the+key&return=https%3A%2F%2Fpulpitlive.app%2F%23paid&cbt=Return+to+Pulpit+Live';
@@ -91,14 +94,24 @@ if (window.top !== window.self) { try { window.top.location.replace(window.self.
     if (!form.checkValidity()) { msg.textContent = 'Please fill in every field.'; form.reportValidity(); return; }
     btn.disabled = true; msg.textContent = 'Registering…';
     const bot = !!form._honey.value;
-    const data = new FormData(form);
-    data.append('_subject', 'Pulpit Live trial registration — ' + form.church.value);
-    data.append('platform', osSel.options[osSel.selectedIndex].text);
-    data.append('_replyto', data.get('email'));
-    data.append('_template', 'table');
-    data.append('_captcha', 'false');
     let ok = false;
-    if (FORM_ENDPOINT && !bot) {
+    if (bot) {
+      ok = true;                                   // a spam trap filled in: pretend, keep nothing
+    } else if (REGISTER_ENDPOINT) {
+      // your own script: a JSON body as text/plain needs no preflight, and the reply says ok:true
+      const payload = { name: form.name.value, church: form.church.value, address: form.address.value, email: form.email.value, phone: form.phone.value, os: osSel.value, secret: REGISTER_SECRET };
+      try {
+        const r = await fetch(REGISTER_ENDPOINT, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' });
+        const j = r.ok ? await r.json().catch(() => ({ ok: false })) : { ok: false };
+        ok = !!j.ok;
+      } catch (err) { ok = false; }
+    } else if (FORM_ENDPOINT) {
+      const data = new FormData(form);
+      data.append('_subject', 'Pulpit Live trial registration — ' + form.church.value);
+      data.append('platform', osSel.options[osSel.selectedIndex].text);
+      data.append('_replyto', data.get('email'));
+      data.append('_template', 'table');
+      data.append('_captcha', 'false');
       try { const r = await fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } }); ok = r.ok; } catch (err) { ok = false; }
     }
     btn.disabled = false; msg.textContent = '';
