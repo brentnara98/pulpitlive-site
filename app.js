@@ -13,8 +13,8 @@ if (window.top !== window.self) { try { window.top.location.replace(window.self.
   const REGISTER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzs0sLqEcocx44v5jZsIcoq9xkVvyCA71_uDsB1DEmPwJ75LptGpQRv423AkLvflIy3mg/exec';
   const REGISTER_SECRET = '';   // same word as SECRET in Code.gs, or '' for none
   const FORM_ENDPOINT = 'https://formsubmit.co/ajax/info@pulpitlive.app';
-  // 3. The PayPal payment link for "Pulpit Live - Lifetime License" (US$99):
-  const PAYPAL_LINK = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=naraivanbrent%40gmail.com&item_name=Pulpit+Live+-+Lifetime+License+(one+church,+2+computers)&item_number=PULPITLIVE-LIFETIME&amount=99.00&currency_code=USD&no_shipping=1&no_note=0&cn=Church+name+(as+it+should+appear+on+the+license)+and+the+email+for+the+key&return=https%3A%2F%2Fpulpitlive.app%2F%23paid&cbt=Return+to+Pulpit+Live';
+  // 3. The PayPal payment link for "Pulpit Live - Lifetime License" (launch price ₱2,499, about US$40):
+  const PAYPAL_LINK = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=naraivanbrent%40gmail.com&item_name=Pulpit+Live+-+Lifetime+License+(one+church,+2+computers)&item_number=PULPITLIVE-LIFETIME&amount=2499.00&currency_code=PHP&no_shipping=1&no_note=0&cn=Church+name+(as+it+should+appear+on+the+license)+and+the+email+for+the+key&return=https%3A%2F%2Fpulpitlive.app%2F%23paid&cbt=Return+to+Pulpit+Live';
 
   document.getElementById('paypalBtn').href = PAYPAL_LINK;
   document.getElementById('lnkWin').href = DOWNLOADS.win;

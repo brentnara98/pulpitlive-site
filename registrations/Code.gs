@@ -106,7 +106,7 @@ function confirmThem_(reg) {
     'Your download (' + PLATFORM[reg.os] + '):',
     DOWNLOADS[reg.os],
     '',
-    'The trial is the full app for 14 days. After that a lifetime license (US$99, one church, two computers) keeps it running:',
+    'The trial is the full app for 14 days. After that a lifetime license (₱2,499 launch price, about US$40, one church, two computers) keeps it running:',
     'https://pulpitlive.app/#pricing',
     '',
     'If anything does not work — the microphone, the projector, a verse that was not caught — just reply to this email.',
