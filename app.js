@@ -127,3 +127,24 @@ if (window.top !== window.self) { try { window.top.location.replace(window.self.
     document.getElementById('dl').hidden = false;
     document.getElementById('dl').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
+
+// How to install: Windows / Mac tabs; follows the computer picked in the trial form
+(() => {
+  const tabs = document.querySelectorAll('.install .tab');
+  if (!tabs.length) return;
+  const show = (os) => {
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.os === os)));
+    document.querySelectorAll('.install [data-panel]').forEach((p) => {
+      const on = p.dataset.panel === os;
+      p.hidden = !on;
+      const f = p.querySelector('iframe[data-src]');
+      if (on && f && !f.src) f.src = f.dataset.src;   // load the Drive player only when its tab is shown
+    });
+  };
+  tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.os)));
+  const sel = document.getElementById('os');
+  const pick = () => show(sel && sel.value.startsWith('mac') ? 'mac' : 'win');
+  if (sel) sel.addEventListener('change', pick);
+  pick();
+  setTimeout(pick, 800); // after the Mac chip check settles
+})();
